@@ -92,7 +92,7 @@ class AudioWebPageDownloader:
             if http_audiofile_url not in exists_audiofiles:
                 if self.download_url(audiofile,
                                      self.dst_filename(audiofile, subdir)):
-                    self.__db.add_audio_file(link, audiofile)
+                    self.__db.add_audio_file(link, http_audiofile_url)
                     try:
                         notify2.init("audiowebpagedog")
                         notify = notify2.Notification(
