@@ -1,18 +1,15 @@
 # audiowebpagedog
-Инструмент для автоматической загрузки свежих аудиозаписей с указанной веб страницы
+Набор скриптов позволяющий автоматически загружать новые аудио файлы с указанной web-страницы.
 
-Установка и запуск
-------------------
-Для работы с утилитой вам потребуется установить python3 а так же 
-модуль python3-nofity2. Установка в дистрибутивах debian/ubuntu
-будет выглядеть следующим образом:
+Информация о новых загруженных аудиофайлах появляется в области уведомлений.
 
-```bash
-sudo apt-get install python3 python3-notify2
-```
+Настройки программы хранятся в файле базы данных SQLite: **$HOME/.config/audiowebpagedog/audiowebpagedog.db**
 
-Как пользоваться?
------------------
+## Зависимости
+* python3
+* python3-notify2
+
+## Использование
 ```bash
 $ audiowebpagedog_ctl.py
 === audio web page control v.0.1.0 ===
@@ -23,47 +20,43 @@ Command details:
     set download_directory <path>   -- set the download directory
     get download_directory          -- show the download directory
     page add <page_url> <subdir>    -- add the page
-    page edit <page_url> <subdir>   -- add the page
+    page edit <page_url> <subdir>   -- change the page directory
     page remove <page_url>          -- remove the page
     page list                       -- show the page list
 ```
 
-Перед началом работы вам необходимо задать путь к каталогу, в который будут
-сохраняться скаченные аудиофайлы. Для этого выполните следующую команду:
+* сначала проинициализируйте базу данных:
+```bash
+$ audiowebpagedog_ctl.py init
+```
+
+* затем вам необходимо задать путь к каталогу, в который будут сохраняться скачанные аудиофайлы:
 ```bash
 $ audiowebpagedog_ctl.py set download_directory /home/username/your_download_directory
 ```
 
-После этого вам потребуется добавить стринцы, которые вы хотите автоматически загружать,
-следующей командой: 
+* после этого вы можете добавлять страницы, с которых вы хотите загружать аудиофайлы: 
 ```bash
 $ audiowebpagedog_ctl.py page add http://some-web.page/something.rss some-channel-directory
 ```
 
-В результате все аудиофайлы с данной страницы будут загружены в
-/home/username/your_download_directory/some-directory
+**Примечание: аудиофалы будут сохраняться в "/home/username/your_download_directory/some-channel-directory"**
 
-Файл настроек представляет из себя файл базы данных SQLite, который располагается по
-адресу ~/.config/audiowebpagedog/audiowebpagedog.db
-
-Для запуска загрузки новых аудиофайлов необходимо запустить скрипт 
-audiowebpagedog_execute.pyбез параметров.
-
-Так же этот скрипт можно запускать по расписанию с помощью cron. Для этого выполните
-команду 
+Для запуска процесса загрузки аудиофайлов используйте:
 ```bash
-$ crontab -e
+$ audiowebpagedog_execute.py
 ```
 
-И пропишите приблизительно следующее:
+Для удобства скрипт можно запускать автоматически. Для этого
+отредактируйте crontab(crontab -e) приблизительно следующим образом:
 ```bash
+# проверять наличие новых подкастов каждый час
 00 * * * * ~/bin/run_script_with_lock-dbus_in_crontab.sh ~/bin/audiowebpagedog/audiowebpagedog_execute.py
+# проверить наличие новых подкастов через 600 секунд после включения компьютера
 @reboot sleep 600 ; ~/bin/run_script_with_lock-dbus_in_crontab.sh ~/bin/audiowebpagedog/audiowebpagedog_execute.py
 ```
-Согласно этим правилам проверка свежих аудиофайлов будет производиться 
-каждый час, а так же через 10 минут после включения компьютера.
 
-run_script_with_lock-dbus_in_crontab.sh решает проблему с отображением уведомлений
-на рабочий стол при запуске скрипта из cron. Подробнее об этом 
+**run_script_with_lock-dbus_in_crontab.sh решает проблему с отображением уведомлений
+на рабочий стол при запуске скрипта из cron. (Подробнее об этом 
 можно прочитать по ссылке http://alekseydurachenko.github.io/2015/03/12/python-notify2-crontab.html
-а сам скрипт находится по адресу https://gist.github.com/AlekseyDurachenko/2027114608e4863eb038
+а сам скрипт находится по адресу https://gist.github.com/AlekseyDurachenko/2027114608e4863eb038)**
