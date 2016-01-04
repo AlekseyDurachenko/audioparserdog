@@ -69,7 +69,7 @@ Command details:
     set download_directory <path>   -- set the download directory
     get download_directory          -- show the download directory
     page add <page_url> <subdir>    -- add the page
-    page edit <page_url> <subdir>   -- add the page
+    page edit <page_url> <subdir>   -- change the page directory
     page remove <page_url>          -- remove the page
     page list                       -- show the page list
 """)
